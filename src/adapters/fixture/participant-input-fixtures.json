@@ -1,0 +1,23 @@
+[
+  {
+    "initial": {
+      "colorToken": "ferment",
+      "gesture": {
+        "kind": "summary",
+        "pointCount": 24,
+        "averageSpeed": 128,
+        "travelDistance": 820,
+        "directionChanges": 7,
+        "intensity": 0.54,
+        "density": 0.46
+      }
+    },
+    "naka": { "landMemoryId": "development-land-snow-01" },
+    "tome": { "scenario": "quiet-evening" }
+  },
+  {
+    "initial": { "colorToken": "water", "gesture": { "kind": "none" } },
+    "naka": { "landMemoryId": "development-land-sea-01" },
+    "tome": { "scenario": "reunion", "freeText": "また会いたい夜" }
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "development-sake-snow-01",
+    "isSynthetic": true,
+    "breweryName": "開発用酒蔵（架空）",
+    "productName": "開発用記憶酒・雪",
+    "region": "石川を着想した開発fixture",
+    "category": "junmai",
+    "riceVariety": null,
+    "polishingRatio": 60,
+    "alcoholPercentage": 15,
+    "featureSummary": "開発用の合成データ。静かな冷たさとやわらかな余韻を表す生成パラメータを持つ。",
+    "normalizedTraits": {
+      "brightness": 0.38,
+      "warmth": 0.58,
+      "body": 0.62,
+      "motion": 0.34
+    },
+    "source": {
+      "kind": "synthetic",
+      "provider": "Memory Brewery development team",
+      "sourceUrl": null,
+      "confirmedAt": "2026-07-18",
+      "license": "Not applicable — synthetic development fixture",
+      "sourceExcerptIncluded": false,
+      "redistribution": "allowed",
+      "notes": "架空の開発用fixture。実在する酒蔵・商品・公式説明・画像を含まない。"
+    }
+  }
+]
