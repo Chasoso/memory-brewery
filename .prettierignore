@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+prototypes/
+docs/product/
+docs/adr/
+docs/data/
+docs/development/foundation-plan.md
+docs/development/implementation-plan-v0.1.md
+docs/development/validation-policy.md
+docs/development/workflow.md
+data/
+scripts/quality/pre-push.mjs
+scripts/quality/verify-foundation.mjs

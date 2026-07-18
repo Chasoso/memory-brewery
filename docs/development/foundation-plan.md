@@ -21,7 +21,7 @@
 
 GitHub では `main` への直接 push を禁止し、`<type>/issue-<number>-<short-name>` ブランチから PR を作る。PR は完了した Issue を `Closes #N` で閉じ、Codex はマージしない。
 
-品質ゲートは、現在実行できるものと将来の本番コードに必須なものを明確に分離する。現在は staged diff、秘密情報の簡易スキャン、基盤整合性をローカルで検証する。スタック確定時にのみ formatter、lint、typecheck、unit test、build をコマンド登録して有効化し、CI も同じ登録内容を実行する。未設定のチェックを成功とは扱わない。
+品質ゲートは、現在実行できるものと将来の機能別検証を明確に分離する。staged diff、秘密情報の簡易スキャン、formatter、lint、typecheck、unit test、build はローカルで検証し、CIも同じnpm scriptsを実行する。Playwrightは参加者・会場入口のChromium smoke testから開始し、機能別E2Eは後続Issueで追加する。未設定のチェックを成功とは扱わない。
 
 ## ローカル完結の設計制約
 

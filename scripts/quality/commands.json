@@ -1,11 +1,49 @@
 {
   "preCommit": {
-    "formatter": [],
-    "lint": []
+    "formatter": [
+      {
+        "command": "npm",
+        "args": ["exec", "--", "prettier", "--check", "{files}"],
+        "extensions": [
+          ".css",
+          ".html",
+          ".js",
+          ".json",
+          ".md",
+          ".mjs",
+          ".ts",
+          ".tsx",
+          ".yaml",
+          ".yml"
+        ]
+      }
+    ],
+    "lint": [
+      {
+        "command": "npm",
+        "args": ["exec", "--", "eslint", "{files}"],
+        "extensions": [".js", ".mjs", ".ts", ".tsx"]
+      }
+    ]
   },
   "prePush": {
-    "typecheck": [],
-    "unitTests": [],
-    "build": []
+    "typecheck": [
+      {
+        "command": "npm",
+        "args": ["run", "typecheck"]
+      }
+    ],
+    "unitTests": [
+      {
+        "command": "npm",
+        "args": ["run", "test:run"]
+      }
+    ],
+    "build": [
+      {
+        "command": "npm",
+        "args": ["run", "build"]
+      }
+    ]
   }
 }
