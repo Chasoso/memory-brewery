@@ -1,0 +1,23 @@
+name: Repository checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  foundation:
+    name: Foundation validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Validate repository foundation
+        run: node scripts/quality/verify-foundation.mjs
+      - name: Run configured quality commands
+        run: node scripts/quality/pre-push.mjs --ci

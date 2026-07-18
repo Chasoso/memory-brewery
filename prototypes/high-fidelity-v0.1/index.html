@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f1eee4" />
+  <title>記憶醸造所｜高忠実度プロトタイプ</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main id="app" class="app-shell">
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="app-header">
+      <div class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <p class="eyebrow">MEMORY BREWERY</p>
+          <h1>記憶醸造所</h1>
+        </div>
+      </div>
+      <button id="soundToggle" class="icon-button" type="button" aria-label="音のオン・オフ">
+        <span class="sound-icon" aria-hidden="true">♪</span>
+      </button>
+    </header>
+
+    <section id="screen-intro" class="screen is-active" data-screen="intro">
+      <div class="hero-visual" aria-hidden="true">
+        <canvas id="introCanvas"></canvas>
+        <div class="hero-orbit orbit-a"></div>
+        <div class="hero-orbit orbit-b"></div>
+      </div>
+
+      <div class="content-block intro-copy">
+        <p class="step-label">一献</p>
+        <h2>この一杯に、<br />あなたの記憶を仕込みます。</h2>
+        <p class="lead">
+          石川の日本酒が持つ個性に、土地の気配とあなたの感覚を重ね、
+          音と動きの「記憶酒」をつくります。
+        </p>
+      </div>
+
+      <article class="sake-card">
+        <div class="sake-card__body">
+          <p class="micro-label">TODAY'S SAKE</p>
+          <h3>白山しずく <span>純米吟醸</span></h3>
+          <p>百万石乃白・精米歩合 55%・石川県白山市</p>
+        </div>
+        <div class="sake-seal" aria-label="石川の酒">石</div>
+      </article>
+
+      <div class="bottom-action">
+        <button class="primary-button" type="button" data-next="hatsuzoe">
+          三段仕込みをはじめる
+          <span aria-hidden="true">→</span>
+        </button>
+        <p class="assistive-note">飲酒できない方も、香りや土地の物語から参加できます。</p>
+      </div>
+    </section>
+
+    <section id="screen-hatsuzoe" class="screen" data-screen="hatsuzoe">
+      <div class="progress-header">
+        <div>
+          <p class="step-label">初添</p>
+          <h2>いま感じたものを、<br />色と動きで。</h2>
+        </div>
+        <span class="step-count">1 / 3</span>
+      </div>
+
+      <div class="interaction-stage">
+        <canvas id="gestureCanvas" aria-label="指で描く入力エリア"></canvas>
+        <div class="stage-hint">
+          <span class="stage-hint__dot"></span>
+          画面に触れて、感じた動きを描いてください
+        </div>
+      </div>
+
+      <div class="color-tray" aria-label="基調色を選択">
+        <button class="color-chip is-selected" data-color="#678077" style="--chip:#678077" aria-label="深い青緑"></button>
+        <button class="color-chip" data-color="#8f6f63" style="--chip:#8f6f63" aria-label="赤茶"></button>
+        <button class="color-chip" data-color="#c5b87b" style="--chip:#c5b87b" aria-label="稲穂色"></button>
+        <button class="color-chip" data-color="#6f7890" style="--chip:#6f7890" aria-label="青鼠"></button>
+        <button class="color-chip" data-color="#d9d4c7" style="--chip:#d9d4c7" aria-label="白練"></button>
+      </div>
+
+      <div class="bottom-action compact">
+        <button id="hatsuzoeNext" class="primary-button" type="button" disabled data-next="odori">
+          この感覚を仕込む
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-odori" class="screen" data-screen="odori">
+      <div class="centered-screen">
+        <div class="odori-visual" aria-hidden="true">
+          <canvas id="odoriCanvas"></canvas>
+          <div class="breath-ring"></div>
+        </div>
+        <p class="step-label">踊り</p>
+        <h2>仕込みを、少し休ませます。</h2>
+        <p class="lead narrow">
+          もう一度、香りや余韻を感じてください。<br />
+          記憶が静かに動き始めます。
+        </p>
+        <div class="odori-timer" aria-label="待機時間">
+          <span id="odoriSeconds">10</span>
+          <small>sec</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-nakazoe" class="screen" data-screen="nakazoe">
+      <div class="progress-header">
+        <div>
+          <p class="step-label">仲添</p>
+          <h2>この一杯に、<br />どの石川を重ねますか。</h2>
+        </div>
+        <span class="step-count">2 / 3</span>
+      </div>
+
+      <div class="land-list">
+        <button class="land-card" type="button" data-land="snow" data-title="金沢の雪明かり" data-subtitle="気温 1.8℃・弱い北西風">
+          <span class="land-card__glyph glyph-snow" aria-hidden="true"></span>
+          <span class="land-card__copy">
+            <strong>金沢の雪明かり</strong>
+            <small>白い粒子・静かな残響</small>
+          </span>
+          <span class="land-card__meta">金沢</span>
+        </button>
+
+        <button class="land-card" type="button" data-land="sea" data-title="能登の冬の海" data-subtitle="海岸近く・風速 6.1m/s">
+          <span class="land-card__glyph glyph-sea" aria-hidden="true"></span>
+          <span class="land-card__copy">
+            <strong>能登の冬の海</strong>
+            <small>横へ流れる波・低い音</small>
+          </span>
+          <span class="land-card__meta">能登</span>
+        </button>
+
+        <button class="land-card" type="button" data-land="water" data-title="白山の雪解け水" data-subtitle="山地・河川・春の融雪">
+          <span class="land-card__glyph glyph-water" aria-hidden="true"></span>
+          <span class="land-card__copy">
+            <strong>白山の雪解け水</strong>
+            <small>透明な波紋・長い余韻</small>
+          </span>
+          <span class="land-card__meta">白山</span>
+        </button>
+      </div>
+
+      <aside class="source-note">
+        <span>OPEN DATA</span>
+        <p id="landSourceText">石川県・気象・観光関連データを、土地の原料として使用します。</p>
+      </aside>
+
+      <div class="bottom-action compact">
+        <button id="nakazoeNext" class="primary-button" type="button" disabled data-next="tomezoe">
+          土地の記憶を重ねる
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-tomezoe" class="screen" data-screen="tomezoe">
+      <div class="progress-header">
+        <div>
+          <p class="step-label">留添</p>
+          <h2>この酒を、次はどんな場面で<br />開けたいですか。</h2>
+        </div>
+        <span class="step-count">3 / 3</span>
+      </div>
+
+      <div class="future-grid">
+        <button class="future-card" data-future="再会" data-ending="converge" type="button">
+          <span>久しぶりの</span><strong>再会</strong>
+        </button>
+        <button class="future-card" data-future="雪の日" data-ending="float" type="button">
+          <span>次の</span><strong>雪の日</strong>
+        </button>
+        <button class="future-card" data-future="祝い" data-ending="burst" type="button">
+          <span>大切な人との</span><strong>祝い</strong>
+        </button>
+        <button class="future-card" data-future="静かな夜" data-ending="center" type="button">
+          <span>ひとりで過ごす</span><strong>静かな夜</strong>
+        </button>
+      </div>
+
+      <label class="free-input">
+        <span>または、あなたの言葉で</span>
+        <input id="futureInput" type="text" maxlength="36" placeholder="例：能登をもう一度訪れたとき" />
+      </label>
+
+      <div class="bottom-action compact">
+        <button id="tomezoeNext" class="primary-button" type="button" disabled data-next="opening">
+          三段の仕込みを終える
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-opening" class="screen opening-screen" data-screen="opening">
+      <canvas id="openingCanvas"></canvas>
+      <div class="opening-overlay">
+        <p class="step-label light">開栓</p>
+        <p class="opening-kicker">あなたの記憶酒</p>
+        <h2 id="memoryTitle">雪間の再会</h2>
+        <p id="memorySummary" class="opening-summary">
+          深い青緑の波に、金沢の雪明かりと、未来の再会を重ねました。
+        </p>
+
+        <div class="recipe-strip">
+          <div><span>初添</span><strong id="recipeHatsu">深い青緑・ゆるやかな波</strong></div>
+          <div><span>仲添</span><strong id="recipeNaka">金沢の雪明かり</strong></div>
+          <div><span>留添</span><strong id="recipeTome">再会</strong></div>
+        </div>
+
+        <div class="opening-actions">
+          <button id="replayButton" class="secondary-button" type="button">もう一度再生</button>
+          <a class="text-link" href="./venue.html">会場作品を見る →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

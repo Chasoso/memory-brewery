@@ -1,0 +1,41 @@
+name: Feature
+description: Define one reviewable product or technical change.
+title: "feat: "
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: "Describe one independently reviewable change. Update the product spec or approved prototype first when the change affects a source of truth."
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / goal
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: "What is included?"
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: "Use observable, testable statements."
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation
+      description: "List local checks and required fixtures/mocks or multi-browser verification."
+    validations:
+      required: true
