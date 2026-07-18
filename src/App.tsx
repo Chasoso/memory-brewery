@@ -1,13 +1,11 @@
-type AppProps = {
-  entryLabel: "Participant entry" | "Venue entry";
-};
+import { ParticipantExperienceScreen } from "./participant/ParticipantExperience";
+import { getParticipantTestConfiguration } from "./application/participant/test-configuration";
 
-export function App({ entryLabel }: AppProps) {
-  return (
-    <main>
-      <h1>Memory Brewery</h1>
-      <p>Local application foundation</p>
-      <p>{entryLabel}</p>
-    </main>
+export function App() {
+  const testConfiguration = getParticipantTestConfiguration(
+    window.location.search,
+    import.meta.env.VITE_ENABLE_E2E_MODE === "true",
   );
+
+  return <ParticipantExperienceScreen {...(testConfiguration ?? {})} />;
 }

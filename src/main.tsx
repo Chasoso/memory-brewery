@@ -11,6 +11,6 @@ if (rootElement === null) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <App entryLabel="Participant entry" />
+    <App />
   </StrictMode>,
 );
