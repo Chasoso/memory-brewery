@@ -22,7 +22,7 @@ Tone.js 15.1.22 は開栓操作後に dynamic import されます。`Tone.start(
 
 ## テスト条件
 
-E2E test mode は従来どおり `VITE_ENABLE_E2E_MODE=true` と `?test=1` の両方がある場合だけ有効です。固定 Chromium screenshot は 375×760 CSS px、Chromium、音声なし、固定 seed/clock、20ms の test opening 完了状態で比較します。通常 production build の query parameter だけでは test mode になりません。
+E2E test mode は従来どおり `VITE_ENABLE_E2E_MODE=true` と `?test=1` の両方がある場合だけ有効です。固定 Chromium screenshot は 375×760 CSS px、Chromium、音声なし、固定 seed/clock、20ms の test opening 完了状態で比較します。Canvas rasterization の OS 差を隠す閾値は使わず、Playwright の Windows と Linux の platform-specific baseline をそれぞれ比較します。通常 production build の query parameter だけでは test mode になりません。
 
 ## 次の境界
 
