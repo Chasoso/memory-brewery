@@ -3,6 +3,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 const requiredFiles = [
   "README.md", "AGENTS.md", "CONTRIBUTING.md", ".editorconfig", ".gitattributes",
   ".github/PULL_REQUEST_TEMPLATE.md", ".github/workflows/ci.yml",
+  "package.json", "package-lock.json", "eslint.config.js", "vite.config.ts", "vitest.config.ts", "playwright.config.ts",
   "docs/development/foundation-plan.md", "docs/development/workflow.md", "docs/development/validation-policy.md",
   "docs/data/data-sources.md", "data/README.md", ".githooks/pre-commit", ".githooks/pre-push",
   "scripts/quality/commands.json",

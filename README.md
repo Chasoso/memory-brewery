@@ -31,4 +31,8 @@ node scripts/quality/pre-commit.mjs
 node scripts/quality/pre-push.mjs
 ```
 
-スタック確定後に formatter / lint / typecheck / unit test / build の実コマンドを `scripts/quality/commands.json` に登録します。詳細は [検証方針](docs/development/validation-policy.md) を参照してください。
+formatter / lint / typecheck / unit test / build の実コマンドは `scripts/quality/commands.json` に登録済みです。詳細は [検証方針](docs/development/validation-policy.md) を参照してください。
+
+## Local application foundation
+
+Vite、React、TypeScript、品質コマンド、参加者・会場の最小入口を導入済みです。Node.js `>=20.19.0` と npm を前提にし、再現可能な導入には `npm install` ではなく `npm ci` を使用します。実行手順、Playwright Chromium の導入、TypeScript設定の判断は [ローカルアプリケーション基盤](docs/development/local-application-foundation.md) を参照してください。この段階ではプロダクト機能やプロトタイプのReact移植は行っていません。
