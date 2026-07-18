@@ -6,6 +6,17 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 未登録 | - | - | - | - | - | - | - |
 
+## Current development fixtures
+
+The local MVP currently ships only the following synthetic development fixtures. They are intentionally not verified real-product or real-place records, and they must not be presented as public catalog data.
+
+| Dataset or page | Type | Provider | URL | Confirmed | License | Attributes used | Processing | Verbatim source text | Redistribution | Synthetic / unknowns |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `src/adapters/fixture/sake-fixtures.json` | Development fixture | Memory Brewery development team | Not applicable | 2026-07-18 | Not applicable: synthetic fixture | Stable ID, explicitly fictional brewery/product names, category, optional numeric fields, normalized generation traits | Hand-authored, normalized values for deterministic recipe tests | None | Allowed within this repository as development fixture | Synthetic. No real brewery, product, official description, image, or inferred production values are included. |
+| `src/adapters/fixture/land-memory-fixtures.json` | Development fixture | Memory Brewery development team | Not applicable | 2026-07-18 | Not applicable: synthetic fixture | Stable ID, development display name, tags, season, generation traits | Hand-authored generative descriptions; `sourceFacts` is empty | None | Allowed within this repository as development fixture | Synthetic. The fixtures are inspired by broad Ishikawa themes only and make no claim to be factual geographic records. |
+
+These JSON files are code-adjacent fixtures because the fixture loader imports and validates them at runtime. `data/source/` and `data/fixtures/` remain the locations for future original data and larger non-code fixture sets. Before adding real data, replace the applicable synthetic record with its source URL, provider, confirmation date, license, attributes, transformation, redistribution decision, and any remaining unknowns.
+
 ## ルール
 
 - 原本データは `data/source/`（将来追加時）に置き、取得物・取得条件・ライセンスをこの台帳に記録する。

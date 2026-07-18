@@ -1,0 +1,86 @@
+[
+  {
+    "id": "development-land-snow-01",
+    "isSynthetic": true,
+    "displayName": "開発用・雪の記憶",
+    "region": "石川を着想した開発fixture",
+    "generativeDescription": "雪解けの粒子が静かにほどけるための創作的な生成表現。",
+    "tags": ["snow", "water"],
+    "season": "winter",
+    "generativeTraits": {
+      "water": 0.48,
+      "snow": 0.9,
+      "sea": 0.05,
+      "mountain": 0.44,
+      "town": 0.12,
+      "culture": 0.2
+    },
+    "sourceFacts": [],
+    "source": {
+      "kind": "synthetic",
+      "provider": "Memory Brewery development team",
+      "sourceUrl": null,
+      "confirmedAt": "2026-07-18",
+      "license": "Not applicable — synthetic development fixture",
+      "sourceExcerptIncluded": false,
+      "redistribution": "allowed",
+      "notes": "地図・観光情報・写真・原文を含まない創作的な開発用データ。"
+    }
+  },
+  {
+    "id": "development-land-sea-01",
+    "isSynthetic": true,
+    "displayName": "開発用・海の記憶",
+    "region": "石川を着想した開発fixture",
+    "generativeDescription": "緩やかな波と遠い水平線を表すための創作的な生成表現。",
+    "tags": ["sea", "water"],
+    "season": "summer",
+    "generativeTraits": {
+      "water": 0.76,
+      "snow": 0.04,
+      "sea": 0.92,
+      "mountain": 0.08,
+      "town": 0.16,
+      "culture": 0.18
+    },
+    "sourceFacts": [],
+    "source": {
+      "kind": "synthetic",
+      "provider": "Memory Brewery development team",
+      "sourceUrl": null,
+      "confirmedAt": "2026-07-18",
+      "license": "Not applicable — synthetic development fixture",
+      "sourceExcerptIncluded": false,
+      "redistribution": "allowed",
+      "notes": "地図・観光情報・写真・原文を含まない創作的な開発用データ。"
+    }
+  },
+  {
+    "id": "development-land-town-01",
+    "isSynthetic": true,
+    "displayName": "開発用・町の記憶",
+    "region": "石川を着想した開発fixture",
+    "generativeDescription": "灯りの重なりと歩幅の余韻を表すための創作的な生成表現。",
+    "tags": ["town", "culture"],
+    "season": "all-season",
+    "generativeTraits": {
+      "water": 0.22,
+      "snow": 0.18,
+      "sea": 0.08,
+      "mountain": 0.16,
+      "town": 0.88,
+      "culture": 0.72
+    },
+    "sourceFacts": [],
+    "source": {
+      "kind": "synthetic",
+      "provider": "Memory Brewery development team",
+      "sourceUrl": null,
+      "confirmedAt": "2026-07-18",
+      "license": "Not applicable — synthetic development fixture",
+      "sourceExcerptIncluded": false,
+      "redistribution": "allowed",
+      "notes": "地図・観光情報・写真・原文を含まない創作的な開発用データ。"
+    }
+  }
+]
