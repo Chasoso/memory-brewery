@@ -356,7 +356,7 @@ function GesturePad({
         aria-label="指、ペン、またはマウスで動きを描く入力領域"
         onPointerDown={(event) => {
           activePointer.current = event.pointerId;
-          event.currentTarget.setPointerCapture(event.pointerId);
+          event.currentTarget.setPointerCapture?.(event.pointerId);
           onPoints(appendGesturePoint([], toPoint(event)));
         }}
         onPointerMove={(event) => {
@@ -366,7 +366,7 @@ function GesturePad({
         onPointerUp={(event) => {
           if (activePointer.current === event.pointerId) {
             activePointer.current = undefined;
-            event.currentTarget.releasePointerCapture(event.pointerId);
+            event.currentTarget.releasePointerCapture?.(event.pointerId);
           }
         }}
         onPointerCancel={() => {

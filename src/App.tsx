@@ -1,18 +1,11 @@
 import { ParticipantExperienceScreen } from "./participant/ParticipantExperience";
+import { getParticipantTestConfiguration } from "./application/participant/test-configuration";
 
 export function App() {
-  const parameters = new URLSearchParams(window.location.search);
-  const testMode = parameters.get("test") === "1";
-
-  return (
-    <ParticipantExperienceScreen
-      {...(testMode
-        ? {
-            seed: "e2e-fixed-seed",
-            odoriDurationMs: 10,
-            clock: { now: () => "2026-07-18T00:00:00.000Z" },
-          }
-        : {})}
-    />
+  const testConfiguration = getParticipantTestConfiguration(
+    window.location.search,
+    import.meta.env.VITE_ENABLE_E2E_MODE === "true",
   );
+
+  return <ParticipantExperienceScreen {...(testConfiguration ?? {})} />;
 }
