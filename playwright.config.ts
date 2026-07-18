@@ -10,6 +10,7 @@ const e2eEnvironmentPrefix =
 
 export default defineConfig({
   testDir: "./tests/e2e",
+  snapshotPathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}{ext}",
   fullyParallel: true,
   use: {
     baseURL,
