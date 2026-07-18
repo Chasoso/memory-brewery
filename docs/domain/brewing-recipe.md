@@ -1,5 +1,9 @@
 # BrewingRecipe
 
+## Recipe identity
+
+Recipe ID hashes an explicit, fixed-order canonical sequence of seed, sake ID, land-memory ID, the single captured `createdAt`, and every normalized `ParticipantInput` field. It does not serialize an input object directly, so insertion or enumeration order cannot change the identity. `createBrewingRecipe` always uses its Mulberry32 implementation; fixed random values remain test-support only and do not alter `generatorVersion`.
+
 `BrewingRecipe` は、参加者入力、日本酒fixture、土地fixtureを、音とビジュアルが後で利用するJSON安全な中間表現へ変換するMVP契約です。Tone.js、Canvas、React、ブラウザAPIには依存しません。
 
 - 入力: `SakeProfile`、`LandMemory`、`ParticipantInput`、seed、`Clock`

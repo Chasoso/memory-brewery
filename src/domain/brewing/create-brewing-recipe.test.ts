@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { loadFixtures } from "../../adapters/fixture/load-fixtures";
 import {
@@ -31,6 +31,52 @@ describe("createBrewingRecipe", () => {
     expect(
       BrewingRecipeSchema.parse(JSON.parse(JSON.stringify(first))),
     ).toEqual(first);
+  });
+
+  it("uses participant input in the recipe ID identity", () => {
+    const changedParticipantInput = {
+      ...input,
+      initial: { ...input.initial, colorToken: "ink" as const },
+    };
+    const first = createBrewingRecipe({ ...baseArguments, seed: "identity" });
+    const second = createBrewingRecipe({
+      ...baseArguments,
+      participantInput: changedParticipantInput,
+      seed: "identity",
+    });
+
+    expect(second.recipeId).not.toBe(first.recipeId);
+  });
+
+  it("canonicalizes participant identity without relying on property order", () => {
+    const reorderedParticipantInput = {
+      tome: { ...input.tome },
+      naka: { ...input.naka },
+      initial: {
+        gesture: { ...input.initial.gesture },
+        colorToken: input.initial.colorToken,
+      },
+    };
+    const first = createBrewingRecipe({ ...baseArguments, seed: "canonical" });
+    const second = createBrewingRecipe({
+      ...baseArguments,
+      participantInput: reorderedParticipantInput,
+      seed: "canonical",
+    });
+
+    expect(second.recipeId).toBe(first.recipeId);
+  });
+
+  it("reads the clock once and reuses the instant for identity and recipe data", () => {
+    const clock = { now: vi.fn(() => "2026-07-18T00:00:00.000Z") };
+    const recipe = createBrewingRecipe({
+      ...baseArguments,
+      seed: "single-clock-read",
+      clock,
+    });
+
+    expect(clock.now).toHaveBeenCalledTimes(1);
+    expect(recipe.createdAt).toBe("2026-07-18T00:00:00.000Z");
   });
 
   it("changes generated parameters when the seed changes", () => {
@@ -74,13 +120,12 @@ describe("createBrewingRecipe", () => {
     expect(recipe.visual.particleCount).toBeLessThanOrEqual(300);
   });
 
-  it("accepts an injected fixed random boundary", () => {
+  it("records the actual Mulberry32 generator version", () => {
     const recipe = createBrewingRecipe({
       ...baseArguments,
       seed: "fixed-random",
-      random: createFixedSeededRandom([0.1, 0.2, 0.3]),
     });
-    expect(recipe.audio.notePattern).toEqual([2, 3, 1, 2, 3, 1]);
+    expect(recipe.generatorVersion).toBe("mulberry32-v1");
   });
 });
 
@@ -103,5 +148,16 @@ describe("clock test support", () => {
     const clock = createFixedClock("2026-07-18T12:34:56.000Z");
     expect(clock.now()).toBe("2026-07-18T12:34:56.000Z");
     expect(clock.now()).toBe("2026-07-18T12:34:56.000Z");
+  });
+});
+
+describe("fixed random test support", () => {
+  it("returns its injected test sequence without changing recipe generator metadata", () => {
+    const random = createFixedSeededRandom([0.1, 0.2, 0.3]);
+    expect([
+      random.nextInt(0, 11),
+      random.nextInt(0, 11),
+      random.nextInt(0, 11),
+    ]).toEqual([1, 2, 3]);
   });
 });

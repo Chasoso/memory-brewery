@@ -6,7 +6,7 @@ import {
   type SakeProfile,
 } from "./schemas";
 import type { Clock } from "./clock";
-import { createSeededRandom, type SeededRandom } from "./random";
+import { createSeededRandom } from "./random";
 
 export type CreateBrewingRecipeInput = {
   sake: SakeProfile;
@@ -14,7 +14,6 @@ export type CreateBrewingRecipeInput = {
   participantInput: ParticipantInput;
   seed: string | number;
   clock: Clock;
-  random?: SeededRandom;
 };
 
 export function createBrewingRecipe(
@@ -27,7 +26,8 @@ export function createBrewingRecipe(
   }
 
   const seed = String(input.seed);
-  const random = input.random ?? createSeededRandom(seed);
+  const createdAt = input.clock.now();
+  const random = createSeededRandom(seed);
   const gesture = input.participantInput.initial.gesture;
   const gestureIntensity =
     gesture.kind === "summary" ? gesture.intensity : 0.25;
@@ -50,11 +50,19 @@ export function createBrewingRecipe(
   const ambientTexture = dominantLandTag(land);
 
   const recipe = {
-    recipeId: `recipe-v1-${fnv1a(`${seed}|${input.sake.id}|${input.landMemory.id}|${input.clock.now()}`)}`,
+    recipeId: `recipe-v1-${fnv1a(
+      canonicalizeRecipeIdentity({
+        seed,
+        sakeId: input.sake.id,
+        landMemoryId: input.landMemory.id,
+        createdAt,
+        participantInput: input.participantInput,
+      }),
+    )}`,
     schemaVersion: "1.0" as const,
     generatorVersion: "mulberry32-v1" as const,
     seed,
-    createdAt: input.clock.now(),
+    createdAt,
     sakeId: input.sake.id,
     landMemoryId: input.landMemory.id,
     participantInput: input.participantInput,
@@ -121,6 +129,47 @@ export function createBrewingRecipe(
   };
 
   return BrewingRecipeSchema.parse(recipe);
+}
+
+function canonicalizeRecipeIdentity(input: {
+  seed: string;
+  sakeId: string;
+  landMemoryId: string;
+  createdAt: string;
+  participantInput: ParticipantInput;
+}): string {
+  const { initial, naka, tome } = input.participantInput;
+  const fields: [string, string | number | null][] = [
+    ["seed", input.seed],
+    ["sakeId", input.sakeId],
+    ["landMemoryId", input.landMemoryId],
+    ["createdAt", input.createdAt],
+    ["initial.colorToken", initial.colorToken],
+    ["gesture.kind", initial.gesture.kind],
+    ["naka.landMemoryId", naka.landMemoryId],
+    ["tome.scenario", tome.scenario ?? null],
+    ["tome.freeText", tome.freeText ?? null],
+  ];
+
+  if (initial.gesture.kind === "summary") {
+    fields.push(
+      ["gesture.pointCount", initial.gesture.pointCount],
+      ["gesture.averageSpeed", initial.gesture.averageSpeed],
+      ["gesture.travelDistance", initial.gesture.travelDistance],
+      ["gesture.directionChanges", initial.gesture.directionChanges],
+      ["gesture.intensity", initial.gesture.intensity],
+      ["gesture.density", initial.gesture.density],
+    );
+  }
+
+  return fields
+    .map(([name, value]) => `${name}=${canonicalValue(value)}`)
+    .join("|");
+}
+
+function canonicalValue(value: string | number | null): string {
+  const serialized = value === null ? "null" : String(value);
+  return `${serialized.length}:${serialized}`;
 }
 
 function dominantLandTag(
