@@ -3,6 +3,7 @@ import type { Clock } from "../../domain/brewing/clock";
 export type ParticipantTestConfiguration = {
   seed: string;
   odoriDurationMs: number;
+  openingDurationMs: number;
   clock: Clock;
 };
 
@@ -17,6 +18,7 @@ export function getParticipantTestConfiguration(
   return {
     seed: "e2e-fixed-seed",
     odoriDurationMs: 10,
+    openingDurationMs: 20,
     clock: { now: () => "2026-07-18T00:00:00.000Z" },
   };
 }

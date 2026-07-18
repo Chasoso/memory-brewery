@@ -600,6 +600,85 @@ input:focus-visible {
     "Hiragino Mincho ProN",
     serif;
 }
+.opening-experience {
+  margin-top: 24px;
+}
+.opening-experience h2 {
+  margin: 0;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(24px, 7vw, 32px);
+  line-height: 1.4;
+}
+.opening-artwork {
+  position: relative;
+  overflow: hidden;
+  min-height: 250px;
+  margin: 22px -8px 0;
+  border: 1px solid rgba(241, 238, 228, 0.28);
+  background: var(--night);
+}
+.opening-canvas {
+  display: block;
+  width: 100%;
+  height: min(62vw, 320px);
+  min-height: 250px;
+}
+.opening-artwork-caption {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  left: 12px;
+  margin: 0;
+  color: rgba(241, 238, 228, 0.82);
+  font-size: 11px;
+  line-height: 1.55;
+  text-align: center;
+  text-shadow: 0 1px 8px rgba(23, 32, 30, 0.8);
+}
+.audio-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 14px;
+  margin: 20px 0 0;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 12px;
+}
+.audio-choice legend {
+  grid-column: 1 / -1;
+  padding: 0;
+  color: var(--koji);
+  font-size: 11px;
+}
+.audio-choice label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.audio-status {
+  min-height: 1.6em;
+  margin: 10px 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.opening-button {
+  position: static;
+  margin-top: 12px;
+}
+.opening-control,
+.opening-reset {
+  color: var(--koji);
+}
+.opening-control {
+  display: block;
+  margin: 8px auto 0;
+}
+.opening-reset {
+  margin-top: 14px;
+}
 .recipe-strip {
   margin: 28px 0 0;
   display: grid;
