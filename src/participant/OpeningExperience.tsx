@@ -12,7 +12,7 @@ import { OpeningCanvas } from "./OpeningCanvas";
 
 const defaultOpeningDurationMs = 20_000;
 
-type OpeningStatus = "ready" | "starting" | "playing" | "completed";
+type OpeningStatus = "ready" | "playing" | "completed";
 
 export function OpeningExperience({
   recipe,
@@ -28,12 +28,15 @@ export function OpeningExperience({
   audioPlayerFactory?: () => AudioPlayer;
 }) {
   const [status, setStatus] = useState<OpeningStatus>("ready");
+  const [visualTimeMs, setVisualTimeMs] = useState(0);
   const [audioWanted, setAudioWanted] = useState(false);
   const [audioStatus, setAudioStatus] = useState<AudioPlaybackStatus>("idle");
   const [reducedMotion, setReducedMotion] = useState(false);
   const audioPlayer = useRef<AudioPlayer | undefined>(undefined);
   const completionTimer = useRef<number | undefined>(undefined);
   const started = useRef(false);
+  const mounted = useRef(true);
+  const sessionId = useRef(0);
 
   useEffect(() => {
     if (typeof window.matchMedia !== "function") return undefined;
@@ -44,48 +47,77 @@ export function OpeningExperience({
     return () => media.removeEventListener("change", update);
   }, []);
 
-  useEffect(
-    () => () => {
-      if (completionTimer.current !== undefined)
-        window.clearTimeout(completionTimer.current);
-      audioPlayer.current?.dispose();
-    },
-    [],
-  );
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      invalidateAudioSession();
+    };
+  }, []);
 
-  const start = async () => {
+  function invalidateAudioSession() {
+    sessionId.current += 1;
+    if (completionTimer.current !== undefined) {
+      window.clearTimeout(completionTimer.current);
+      completionTimer.current = undefined;
+    }
+    audioPlayer.current?.dispose();
+    audioPlayer.current = undefined;
+  }
+
+  const start = () => {
     if (started.current) return;
     started.current = true;
-    setStatus("starting");
+    const currentSession = sessionId.current + 1;
+    sessionId.current = currentSession;
 
-    if (audioWanted) {
-      const player = audioPlayerFactory();
-      audioPlayer.current = player;
-      const nextAudioStatus = await player.start(recipe.audio);
-      setAudioStatus(nextAudioStatus);
-    } else {
-      const player = new NoOpAudioPlayer("muted");
-      audioPlayer.current = player;
-      setAudioStatus(await player.start(recipe.audio));
-    }
-
+    // Visual timing starts immediately and never waits for Web Audio.
+    setVisualTimeMs(0);
     setStatus("playing");
     completionTimer.current = window.setTimeout(() => {
+      setVisualTimeMs(openingDurationMs);
       setStatus("completed");
       audioPlayer.current?.stop();
+      // A late Tone import/start must not revive audio after visual completion.
+      sessionId.current += 1;
+      audioPlayer.current = undefined;
       setAudioStatus((current) =>
-        current === "playing" ? "stopped" : current,
+        current === "playing" || current === "starting" ? "stopped" : current,
       );
     }, openingDurationMs);
+
+    if (!audioWanted) {
+      const player = new NoOpAudioPlayer("muted");
+      audioPlayer.current = player;
+      setAudioStatus("muted");
+      return;
+    }
+
+    const player = audioPlayerFactory();
+    audioPlayer.current = player;
+    setAudioStatus("starting");
+    void player.start(recipe.audio).then(
+      (nextStatus) => {
+        if (!mounted.current || sessionId.current !== currentSession) {
+          player.dispose();
+          return;
+        }
+        setAudioStatus(nextStatus);
+      },
+      () => {
+        if (!mounted.current || sessionId.current !== currentSession) {
+          player.dispose();
+          return;
+        }
+        setAudioStatus("failed");
+      },
+    );
   };
 
   const replay = () => {
-    if (completionTimer.current !== undefined)
-      window.clearTimeout(completionTimer.current);
-    audioPlayer.current?.stop();
-    audioPlayer.current?.dispose();
-    audioPlayer.current = undefined;
+    invalidateAudioSession();
     started.current = false;
+    setVisualTimeMs(0);
     setAudioStatus("idle");
     setStatus("ready");
   };
@@ -96,9 +128,8 @@ export function OpeningExperience({
   };
 
   const reset = () => {
-    if (completionTimer.current !== undefined)
-      window.clearTimeout(completionTimer.current);
-    audioPlayer.current?.dispose();
+    invalidateAudioSession();
+    started.current = false;
     onReset();
   };
 
@@ -107,13 +138,13 @@ export function OpeningExperience({
       <div className="opening-artwork" data-opening-status={status}>
         <OpeningCanvas
           recipe={recipe}
-          active={status === "playing"}
+          visualTimeMs={visualTimeMs}
+          animating={status === "playing"}
           reducedMotion={reducedMotion}
           {...(animationDriver === undefined ? {} : { animationDriver })}
         />
         <p className="opening-artwork-caption" aria-live="polite">
           {status === "ready" && "開栓すると、作品が静かに動き始めます。"}
-          {status === "starting" && "作品を開いています。"}
           {status === "playing" && "作品を再生中です。"}
           {status === "completed" && "作品は静かな余韻として残っています。"}
         </p>
@@ -150,7 +181,7 @@ export function OpeningExperience({
         <button
           className="primary-button opening-button"
           type="button"
-          onClick={() => void start()}
+          onClick={start}
         >
           開栓する <span aria-hidden="true">→</span>
         </button>
@@ -186,6 +217,8 @@ export function OpeningExperience({
 
 function audioMessage(status: AudioPlaybackStatus): string {
   switch (status) {
+    case "starting":
+      return "音声を準備しています。作品は再生中です。";
     case "playing":
       return "音声を再生中です。";
     case "muted":

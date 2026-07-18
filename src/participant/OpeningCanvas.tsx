@@ -10,14 +10,21 @@ import {
 } from "../adapters/opening/canvas-renderer";
 import type { BrewingRecipe } from "../domain/brewing/schemas";
 
+/**
+ * `visualTimeMs` is authoritative when not animating: ready renders 0 and
+ * completed renders the explicit completion time. While animating, elapsed
+ * time advances from the supplied starting time, including hidden-tab time.
+ */
 export function OpeningCanvas({
   recipe,
-  active,
+  visualTimeMs,
+  animating,
   reducedMotion,
   animationDriver = browserAnimationDriver,
 }: {
   recipe: BrewingRecipe;
-  active: boolean;
+  visualTimeMs: number;
+  animating: boolean;
   reducedMotion: boolean;
   animationDriver?: AnimationDriver;
 }) {
@@ -30,16 +37,20 @@ export function OpeningCanvas({
     if (context === null) return undefined;
     let size = normalizeCanvasSize(0, 0, window.devicePixelRatio);
     let requestId: number | undefined;
-    let origin = animationDriver.now();
+    const resumedAtMs = animationDriver.now();
     let disposed = false;
 
+    const elapsedAt = (timeMs: number) =>
+      animating
+        ? visualTimeMs + Math.max(0, timeMs - resumedAtMs)
+        : visualTimeMs;
     const drawAt = (timeMs: number) => {
       if (disposed) return;
       renderOpeningCanvas(
         context,
         recipe,
         size,
-        active ? timeMs - origin : 0,
+        elapsedAt(timeMs),
         reducedMotion,
       );
     };
@@ -56,8 +67,9 @@ export function OpeningCanvas({
     };
     const frame = (timeMs: number) => {
       drawAt(timeMs);
-      if (active && !document.hidden && !disposed)
+      if (animating && !document.hidden && !disposed) {
         requestId = animationDriver.requestFrame(frame);
+      }
     };
     const visibility = () => {
       if (document.hidden) {
@@ -65,9 +77,9 @@ export function OpeningCanvas({
         requestId = undefined;
         return;
       }
-      origin = animationDriver.now();
-      if (active && requestId === undefined)
+      if (animating && requestId === undefined) {
         requestId = animationDriver.requestFrame(frame);
+      }
     };
 
     const observer =
@@ -77,8 +89,9 @@ export function OpeningCanvas({
     observer?.observe(canvas);
     resize();
     document.addEventListener("visibilitychange", visibility);
-    if (active && !document.hidden)
+    if (animating && !document.hidden) {
       requestId = animationDriver.requestFrame(frame);
+    }
 
     return () => {
       disposed = true;
@@ -86,12 +99,13 @@ export function OpeningCanvas({
       document.removeEventListener("visibilitychange", visibility);
       if (requestId !== undefined) animationDriver.cancelFrame(requestId);
     };
-  }, [active, animationDriver, recipe, reducedMotion]);
+  }, [animating, animationDriver, recipe, reducedMotion, visualTimeMs]);
 
   return (
     <canvas
       ref={canvasRef}
       className="opening-canvas"
+      data-visual-time-ms={Math.round(visualTimeMs)}
       aria-label="醸造レシピから生まれた、動く記憶の作品"
       role="img"
     />

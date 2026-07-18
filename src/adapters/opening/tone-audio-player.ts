@@ -5,6 +5,7 @@ import type {
 import type { AudioRecipe } from "../../domain/brewing/schemas";
 
 const maximumNotes = 8;
+const maximumScheduledNotes = 24;
 
 /** Browser-only Tone adapter. Tone is dynamically imported only after opening. */
 export class ToneAudioPlayer implements AudioPlayer {
@@ -94,14 +95,23 @@ function scheduleRecipe(
 ): void {
   const mapped = mapAudioRecipe(recipe);
   const start = tone.now() + 0.05;
-  mapped.noteNames.forEach((note, index) => {
+  const noteCount = Math.min(
+    maximumScheduledNotes,
+    Math.max(
+      mapped.noteNames.length,
+      Math.floor((recipe.durationSeconds - 0.6) / mapped.intervalSeconds),
+    ),
+  );
+  for (let index = 0; index < noteCount; index += 1) {
+    const note = mapped.noteNames[index % mapped.noteNames.length];
+    if (note === undefined) continue;
     synth.triggerAttackRelease(
       note,
       "8n",
       start + index * mapped.intervalSeconds,
       mapped.velocity,
     );
-  });
+  }
 }
 
 function synthOptions(

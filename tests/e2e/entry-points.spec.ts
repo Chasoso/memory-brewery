@@ -24,6 +24,10 @@ test("participant completes the three-stage flow on a mobile viewport", async ({
   await expect(
     page.getByText("作品は静かな余韻として残っています。"),
   ).toBeVisible();
+  await expect(page.locator(".opening-canvas")).toHaveAttribute(
+    "data-visual-time-ms",
+    "20",
+  );
   await expect(page.locator(".opening-canvas")).toHaveScreenshot(
     "opening-fixed-chromium.png",
     { animations: "disabled" },
