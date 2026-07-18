@@ -1,7 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { App } from "./App";
+// eslint-disable-next-line react-refresh/only-export-components -- Dedicated Vite entry point has no refresh exports.
+function VenuePlaceholder() {
+  return (
+    <main>
+      <h1>Memory Brewery</h1>
+      <p>Local application foundation</p>
+      <p>Venue entry</p>
+    </main>
+  );
+}
 
 const rootElement = document.getElementById("root");
 
@@ -11,6 +20,6 @@ if (rootElement === null) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <App entryLabel="Venue entry" />
+    <VenuePlaceholder />
   </StrictMode>,
 );

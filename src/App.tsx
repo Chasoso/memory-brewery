@@ -1,13 +1,18 @@
-type AppProps = {
-  entryLabel: "Participant entry" | "Venue entry";
-};
+import { ParticipantExperienceScreen } from "./participant/ParticipantExperience";
 
-export function App({ entryLabel }: AppProps) {
+export function App() {
+  const parameters = new URLSearchParams(window.location.search);
+  const testMode = parameters.get("test") === "1";
+
   return (
-    <main>
-      <h1>Memory Brewery</h1>
-      <p>Local application foundation</p>
-      <p>{entryLabel}</p>
-    </main>
+    <ParticipantExperienceScreen
+      {...(testMode
+        ? {
+            seed: "e2e-fixed-seed",
+            odoriDurationMs: 10,
+            clock: { now: () => "2026-07-18T00:00:00.000Z" },
+          }
+        : {})}
+    />
   );
 }
