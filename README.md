@@ -35,6 +35,8 @@ formatter / lint / typecheck / unit test / build の実コマンドは `scripts/
 
 E2E、視覚回帰、baseline更新、手動QAの条件は [v0.1 test matrix](docs/testing/v0.1-test-matrix.md) と [manual QA checklist](docs/testing/v0.1-manual-qa-checklist.md) を参照してください。
 
+最新の受け入れ状態とtag未作成の理由は、[v0.1.0 local MVP acceptance review](docs/acceptance/v0.1.0-local-mvp-acceptance-review.md) を参照してください。
+
 ## Local application foundation
 
 Vite、React、TypeScript、品質コマンド、参加者・会場の最小入口を導入済みです。Node.js `>=20.19.0` と npm を前提にし、再現可能な導入には `npm install` ではなく `npm ci` を使用します。実行手順、Playwright Chromium の導入、TypeScript設定の判断は [ローカルアプリケーション基盤](docs/development/local-application-foundation.md) を参照してください。この段階ではプロダクト機能やプロトタイプのReact移植は行っていません。
