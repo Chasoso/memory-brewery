@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
-test("participant completes the three-stage flow on a mobile viewport", async ({
+test("@visual participant completes the three-stage flow on a mobile viewport", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 760 });
@@ -38,7 +39,57 @@ test("participant completes the three-stage flow on a mobile viewport", async ({
   expect(hasNoHorizontalScroll).toBe(true);
 });
 
-test("participant publishes one recipe to a venue tab and venue restores it", async ({
+test("participant accepts real Pointer Events and representative pages have no axe violations", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  await page.goto("/?test=1");
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await page.getByRole("button", { name: "三段仕込みをはじめる" }).click();
+  const pad = page.getByRole("img", {
+    name: "指、ペン、またはマウスで動きを描く入力領域",
+  });
+  await pad.dispatchEvent("pointerdown", {
+    pointerId: 1,
+    clientX: 20,
+    clientY: 20,
+    timeStamp: 0,
+  });
+  await pad.dispatchEvent("pointermove", {
+    pointerId: 1,
+    clientX: 80,
+    clientY: 40,
+    timeStamp: 30,
+  });
+  await pad.dispatchEvent("pointermove", {
+    pointerId: 1,
+    clientX: 140,
+    clientY: 100,
+    timeStamp: 60,
+  });
+  await pad.dispatchEvent("pointerup", {
+    pointerId: 1,
+    clientX: 140,
+    clientY: 100,
+    timeStamp: 80,
+  });
+  await expect(
+    page.getByRole("button", { name: "この感覚を仕込みへ" }),
+  ).toBeEnabled();
+  expect(
+    await page.evaluate<boolean>(
+      "document.documentElement.scrollWidth <= window.innerWidth",
+    ),
+  ).toBe(true);
+  expect(errors).toEqual([]);
+});
+
+test("@visual participant publishes one recipe to a venue tab and venue restores it", async ({
   browser,
 }) => {
   const context = await browser.newContext();
@@ -46,6 +97,9 @@ test("participant publishes one recipe to a venue tab and venue restores it", as
   const participant = await context.newPage();
   await venue.goto("/venue.html?test=1");
   await expect(venue.getByText("まだ記憶はありません")).toBeVisible();
+  expect((await new AxeBuilder({ page: venue }).analyze()).violations).toEqual(
+    [],
+  );
   await participant.goto("/?test=1");
   await participant
     .getByRole("button", { name: "三段仕込みをはじめる" })
