@@ -22,6 +22,7 @@ npm run test:run
 npm run build
 npm exec playwright install chromium
 npm run test:e2e
+npm run test:visual
 ```
 
 まとめて実行する場合は `npm run validate` を使う。Windows PowerShellの実行ポリシーで `npm.ps1` が拒否される場合は `npm.cmd` を使用する。Git hookもWindowsでは `npm.cmd` を自動選択する。

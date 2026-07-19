@@ -110,6 +110,16 @@ export class LocalVenueSync implements RecipePublisher {
     }
     const current = this.readSnapshot();
     const merged = mergeVenueRecipe(current, message.recipe);
+    if (merged.status === "duplicate") {
+      // A storage event can arrive before its matching broadcast. Keep the
+      // collection idempotent while still surfacing the transient arrival.
+      this.emit({
+        type: "recipes",
+        recipes: current,
+        latestRecipeId: message.recipe.recipeId,
+      });
+      return;
+    }
     if (merged.status !== "added") return;
     this.writeSnapshot(merged.recipes);
     this.emit({
