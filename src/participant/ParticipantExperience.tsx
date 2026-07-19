@@ -27,6 +27,7 @@ const defaultOdoriDurationMs = 10_000;
 
 export type ParticipantExperienceProps = {
   experience?: ParticipantExperience;
+  selectionStatus?: "selected" | "defaulted";
   seed?: string;
   clock?: Clock;
   odoriDurationMs?: number;
@@ -60,6 +61,7 @@ const scenarioChoices: {
 
 export function ParticipantExperienceScreen({
   experience: suppliedExperience,
+  selectionStatus,
   seed: suppliedSeed,
   clock = systemClock,
   odoriDurationMs = defaultOdoriDurationMs,
@@ -158,6 +160,7 @@ export function ParticipantExperienceScreen({
       {flow.step === "intro" && (
         <Intro
           experience={experience}
+          selectionStatus={selectionStatus}
           onStart={() => dispatch({ type: "start" })}
         />
       )}
@@ -228,9 +231,11 @@ export function ParticipantExperienceScreen({
 
 function Intro({
   experience,
+  selectionStatus,
   onStart,
 }: {
   experience: ParticipantExperience;
+  selectionStatus?: "selected" | "defaulted";
   onStart: () => void;
 }) {
   const { sake } = experience;
@@ -264,6 +269,10 @@ function Intro({
           <p>
             {sake.category} · {sake.featureSummary}
           </p>
+          <p className="micro-label">sake_id: {sake.id}</p>
+          {selectionStatus === "defaulted" && (
+            <p className="micro-label">既定の開発用日本酒</p>
+          )}
         </div>
         <span className="sake-seal" aria-hidden="true">
           開発用

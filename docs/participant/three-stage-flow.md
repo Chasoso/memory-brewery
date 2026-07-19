@@ -9,3 +9,4 @@ The participant UI is a single React page with an explicit reducer. Its only per
 - The prototype intentionally begins with its first colour chip selected, so the React flow starts with the same `ferment` token. Progress still requires a valid gesture.
 - `?test=1` is inert in ordinary builds. It only composes fixed E2E dependencies when Vite has built the client with `VITE_ENABLE_E2E_MODE=true`; Playwright sets that variable only for its local web server.
 - Fixture loading and recipe completion occur in `src/application/participant/`; UI components do not import fixture JSON directly. Tone.js, final Canvas rendering, and venue publication remain later adapters.
+- Entry uses the URL contract documented in [sake entry](sake-entry.md). `sake_id` selects an already validated synthetic fixture; land candidates are the selected sake's explicit synthetic recommendations, not a UI hard-code.

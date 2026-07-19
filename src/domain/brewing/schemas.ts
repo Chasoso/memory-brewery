@@ -19,8 +19,14 @@ export const SourceMetadataSchema = z.object({
   notes: z.string().max(240),
 });
 
+export const SakeIdSchema = z
+  .string()
+  .min(1)
+  .max(80)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+
 export const SakeProfileSchema = z.object({
-  id: nonEmptyText,
+  id: SakeIdSchema,
   isSynthetic: z.boolean(),
   breweryName: nonEmptyText,
   productName: nonEmptyText,
@@ -36,6 +42,13 @@ export const SakeProfileSchema = z.object({
     body: boundedUnit,
     motion: boundedUnit,
   }),
+  recommendedLandMemoryIds: z
+    .array(nonEmptyText)
+    .min(2)
+    .max(3)
+    .refine((ids) => new Set(ids).size === ids.length, {
+      message: "Land memory recommendations must be unique.",
+    }),
   source: SourceMetadataSchema,
 });
 
@@ -182,7 +195,7 @@ export const BrewingRecipeSchema = z.object({
   generatorVersion: z.literal("mulberry32-v1"),
   seed: nonEmptyText,
   createdAt: z.iso.datetime({ offset: true }),
-  sakeId: nonEmptyText,
+  sakeId: SakeIdSchema,
   landMemoryId: nonEmptyText,
   participantInput: ParticipantInputSchema,
   audio: AudioRecipeSchema,

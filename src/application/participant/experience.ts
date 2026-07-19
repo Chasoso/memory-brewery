@@ -6,19 +6,33 @@ import {
   type BrewingRecipe,
   type FixtureSet,
 } from "../../domain/brewing/schemas";
+import { DEFAULT_SAKE_ID } from "./sake-selection";
 
 export type ParticipantExperience = Pick<
   FixtureSet,
   "sakes" | "landMemories"
 > & { sake: FixtureSet["sakes"][number] };
 
-export function loadParticipantExperience(): ParticipantExperience {
+export function loadParticipantExperience(
+  sakeId = DEFAULT_SAKE_ID,
+): ParticipantExperience {
   const fixtures = loadFixtures();
-  const sake = fixtures.sakes[0];
+  const sake = fixtures.sakes.find((candidate) => candidate.id === sakeId);
   if (sake === undefined) {
-    throw new Error("Participant experience requires one sake fixture.");
+    throw new Error(`Sake fixture is not available: ${sakeId}`);
   }
-  return { sake, sakes: fixtures.sakes, landMemories: fixtures.landMemories };
+  const landMemories = sake.recommendedLandMemoryIds.map((landMemoryId) => {
+    const landMemory = fixtures.landMemories.find(
+      (candidate) => candidate.id === landMemoryId,
+    );
+    if (landMemory === undefined) {
+      throw new Error(
+        `Sake fixture references unavailable land memory: ${landMemoryId}`,
+      );
+    }
+    return landMemory;
+  });
+  return { sake, sakes: fixtures.sakes, landMemories };
 }
 
 export function completeBrewingSession(input: {

@@ -16,6 +16,11 @@
       "body": 0.62,
       "motion": 0.34
     },
+    "recommendedLandMemoryIds": [
+      "development-land-snow-01",
+      "development-land-town-01",
+      "development-land-sea-01"
+    ],
     "source": {
       "kind": "synthetic",
       "provider": "Memory Brewery development team",
@@ -25,6 +30,39 @@
       "sourceExcerptIncluded": false,
       "redistribution": "allowed",
       "notes": "架空の開発用fixture。実在する酒蔵・商品・公式説明・画像を含まない。"
+    }
+  },
+  {
+    "id": "development-sake-water-02",
+    "isSynthetic": true,
+    "breweryName": "開発用酒蔵（架空）・水脈",
+    "productName": "開発用記憶酒・深い麹",
+    "region": "石川を着想した開発fixture",
+    "category": "ginjo",
+    "riceVariety": null,
+    "polishingRatio": 55,
+    "alcoholPercentage": 15,
+    "featureSummary": "開発用の合成データ。米と麹の静かな厚みを比較するための生成パラメータを持つ。",
+    "normalizedTraits": {
+      "brightness": 0.72,
+      "warmth": 0.28,
+      "body": 0.84,
+      "motion": 0.72
+    },
+    "recommendedLandMemoryIds": [
+      "development-land-town-01",
+      "development-land-sea-01",
+      "development-land-snow-01"
+    ],
+    "source": {
+      "kind": "synthetic",
+      "provider": "Memory Brewery development team",
+      "sourceUrl": null,
+      "confirmedAt": "2026-07-19",
+      "license": "Not applicable — synthetic development fixture",
+      "sourceExcerptIncluded": false,
+      "redistribution": "allowed",
+      "notes": "比較用に設計した完全なsynthetic fixture。実在する酒蔵・商品・公式説明・画像を含まない。"
     }
   }
 ]

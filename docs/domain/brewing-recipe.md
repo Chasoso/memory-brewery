@@ -14,4 +14,6 @@ Recipe ID hashes an explicit, fixed-order canonical sequence of seed, sake ID, l
 
 AudioRecipeはtempo、scale、note pattern、timbre category等の抽象値だけを持つ。VisualRecipeは、承認済みプロトタイプにある `ink`、`rice`、`water`、`koji`、`ferment`、`earth`、`night` のtokenを参照し、CSS色値を持たない。実際の色解決、音源、描画は後続Issueのadapterが担う。
 
-mapperは酒の正規化特性を基調、初添のgestureを動き、仲添の土地をambient/flow、留添の場面をscale/duration/titleへ写像する。これはMVP用の透明なルールであり、完成済みの音楽・ビジュアル表現ではない。
+mapperは酒の正規化特性を基調、初添のgestureを動き、仲添の土地をambient/flow、留添の場面をscale/duration/titleへ写像する。酒の `brightness`、`warmth`、`body`、`motion` はそれぞれ tempo / scale / register / density / timbre と particle count / speed / fade などの基礎値へ反映され、他の参加者入力・土地入力によるmodifierを置き換えない。これはMVP用の透明なルールであり、完成済みの音楽・ビジュアル表現ではない。
+
+`generatorVersion` は乱数生成器とmapperアルゴリズムの契約であり、この変更では `mulberry32-v1` のままである。追加したsynthetic fixtureは既存の正規化特性入力を変えるだけで、recipe schema、identity canonicalization、seed処理を変更しない。そのため旧recipeとsnapshotは引き続き読める。
