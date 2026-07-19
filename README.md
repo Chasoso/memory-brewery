@@ -13,7 +13,7 @@
 
 開発運用は [AGENTS.md](AGENTS.md) と [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。アプリの技術スタック、クラウド、デプロイ方式は未決定です。
 
-現行プロトタイプは静的ファイルとしてローカルで確認できます。`prototypes/high-fidelity-v0.1/README.md` の手順に従い、参加者画面と会場画面を別タブまたは別ブラウザで開いてください。
+現行プロトタイプは静的ファイルとしてローカルで確認できます。`prototypes/high-fidelity-v0.1/README.md` の手順に従い、参加者画面と会場画面を別タブまたは別ブラウザで開いてください。React版では同一ブラウザ・同一originの参加者タブと`/venue.html`間だけで、明示的に会場へ作品を重ねられます。詳細と制約は[会場ローカル同期](docs/venue/local-venue-synchronization.md)を参照してください。
 
 ## 品質ゲート
 

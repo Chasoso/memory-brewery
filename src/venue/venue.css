@@ -1,0 +1,153 @@
+:root {
+  --venue-night: #17201e;
+  --venue-rice: #f1eee4;
+  --venue-water: #d9e7e3;
+  --venue-koji: #d5c79c;
+}
+.venue-shell {
+  min-height: 100svh;
+  overflow: hidden;
+  position: relative;
+  background: var(--venue-night);
+  color: var(--venue-rice);
+  font-family: "Yu Gothic", "Hiragino Sans", sans-serif;
+}
+.venue-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.venue-header,
+.venue-copy,
+.venue-regions,
+.venue-controls {
+  position: relative;
+  z-index: 1;
+}
+.venue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 34px 42px;
+}
+.venue-brand p,
+.venue-copy > p:first-child,
+.venue-counter span {
+  margin: 0;
+  font:
+    10px ui-monospace,
+    monospace;
+  letter-spacing: 0.16em;
+  color: rgba(241, 238, 228, 0.58);
+}
+.venue-brand h1 {
+  margin: 5px 0 0;
+  font-size: 21px;
+  letter-spacing: 0.08em;
+}
+.venue-counter {
+  text-align: right;
+}
+.venue-counter strong {
+  display: block;
+  font-size: clamp(34px, 5vw, 64px);
+  font-weight: 400;
+}
+.venue-copy {
+  position: absolute;
+  left: 6vw;
+  bottom: 17vh;
+  max-width: 650px;
+}
+.venue-copy h2 {
+  margin: 10px 0;
+  font:
+    500 clamp(42px, 7vw, 96px)/1.12 "Yu Mincho",
+    serif;
+  letter-spacing: 0.04em;
+}
+.venue-copy p {
+  color: rgba(241, 238, 228, 0.72);
+  line-height: 1.8;
+}
+.venue-arrival {
+  color: var(--venue-koji) !important;
+}
+.venue-regions {
+  position: absolute;
+  right: 42px;
+  top: 42%;
+  min-width: 180px;
+}
+.venue-regions h2 {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(241, 238, 228, 0.58);
+}
+.venue-regions div {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(241, 238, 228, 0.16);
+}
+.venue-regions div span {
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--venue-water);
+}
+.venue-regions small {
+  color: rgba(241, 238, 228, 0.58);
+  font-family: ui-monospace, monospace;
+}
+.venue-controls {
+  position: absolute;
+  right: 42px;
+  bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.venue-controls p {
+  width: 100%;
+  margin: 0;
+  font-size: 12px;
+}
+.venue-controls button {
+  min-height: 44px;
+  border: 1px solid rgba(241, 238, 228, 0.35);
+  background: rgba(23, 32, 30, 0.56);
+  color: var(--venue-rice);
+  padding: 0 16px;
+  cursor: pointer;
+}
+.venue-controls button:focus-visible {
+  outline: 3px solid var(--venue-koji);
+  outline-offset: 3px;
+}
+@media (max-width: 800px) {
+  .venue-header {
+    padding: 24px;
+  }
+  .venue-copy {
+    left: 24px;
+    right: 24px;
+    bottom: 26vh;
+  }
+  .venue-copy h2 {
+    font-size: 42px;
+  }
+  .venue-regions {
+    right: 24px;
+    top: 31%;
+  }
+  .venue-controls {
+    left: 24px;
+    right: 24px;
+    bottom: 22px;
+  }
+}

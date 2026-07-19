@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { act, render } from "@testing-library/react";
+import { createElement } from "react";
+import { describe, expect, it, vi } from "vitest";
+
+import { LocalVenueSync } from "./adapters/venue/local-venue-sync";
+import { App } from "./App";
 
 import { getParticipantTestConfiguration } from "./application/participant/test-configuration";
 
@@ -13,5 +18,18 @@ describe("participant E2E configuration", () => {
     expect(configuration?.seed).toBe("e2e-fixed-seed");
     expect(configuration?.odoriDurationMs).toBe(10);
     expect(configuration?.clock.now()).toBe("2026-07-18T00:00:00.000Z");
+  });
+});
+
+describe("participant sync lifecycle", () => {
+  it("disposes its owned sync on unmount", async () => {
+    const dispose = vi.spyOn(LocalVenueSync.prototype, "dispose");
+    const view = render(createElement(App));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    view.unmount();
+    expect(dispose).toHaveBeenCalledOnce();
+    dispose.mockRestore();
   });
 });
