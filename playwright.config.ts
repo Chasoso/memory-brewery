@@ -13,7 +13,11 @@ export default defineConfig({
   fullyParallel: true,
   use: {
     baseURL,
+    colorScheme: "light",
+    deviceScaleFactor: 1,
+    locale: "ja-JP",
     trace: "on-first-retry",
+    timezoneId: "Asia/Tokyo",
   },
   projects: [
     {
