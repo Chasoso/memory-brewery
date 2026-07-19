@@ -6,6 +6,8 @@ import {
   type FixtureSet,
 } from "../../domain/brewing/schemas";
 
+export const DEFAULT_SAKE_ID = "development-sake-snow-01";
+
 export function loadFixtures(): FixtureSet {
   return parseFixtureSet({
     sakes: sakeFixtures,
@@ -27,6 +29,20 @@ export function parseFixtureSet(rawFixtureSet: unknown): FixtureSet {
   const landMemoryIds = new Set(
     result.data.landMemories.map((landMemory) => landMemory.id),
   );
+  if (!result.data.sakes.some((sake) => sake.id === DEFAULT_SAKE_ID)) {
+    throw new Error(
+      `Fixture validation failed: default sake ID not found: ${DEFAULT_SAKE_ID}`,
+    );
+  }
+  for (const sake of result.data.sakes) {
+    for (const landMemoryId of sake.recommendedLandMemoryIds) {
+      if (!landMemoryIds.has(landMemoryId)) {
+        throw new Error(
+          `Fixture validation failed: sake ${sake.id} references missing land memory ID: ${landMemoryId}`,
+        );
+      }
+    }
+  }
   for (const participantInput of result.data.participantInputs) {
     if (!landMemoryIds.has(participantInput.naka.landMemoryId)) {
       throw new Error(

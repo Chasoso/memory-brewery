@@ -36,6 +36,7 @@ export const SakeProfileSchema = z.object({
     body: boundedUnit,
     motion: boundedUnit,
   }),
+  recommendedLandMemoryIds: z.array(nonEmptyText).min(2).max(3),
   source: SourceMetadataSchema,
 });
 

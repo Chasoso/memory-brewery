@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { loadFixtures, parseFixtureSet } from "./load-fixtures";
+import {
+  DEFAULT_SAKE_ID,
+  loadFixtures,
+  parseFixtureSet,
+} from "./load-fixtures";
 
 describe("fixture loader", () => {
   it("loads the complete local fixture set", () => {
     const fixtures = loadFixtures();
-    expect(fixtures.sakes).toHaveLength(1);
+    expect(fixtures.sakes.length).toBeGreaterThanOrEqual(2);
+    expect(fixtures.sakes.map((sake) => sake.id)).toContain(DEFAULT_SAKE_ID);
     expect(fixtures.landMemories).toHaveLength(3);
     expect(fixtures.participantInputs.length).toBeGreaterThan(1);
   });
@@ -46,5 +51,24 @@ describe("fixture loader", () => {
         ],
       }),
     ).toThrow("land memory ID not found: not-present");
+  });
+
+  it("rejects a sake association that refers to a missing land memory", () => {
+    const fixtures = loadFixtures();
+    expect(() =>
+      parseFixtureSet({
+        ...fixtures,
+        sakes: [
+          {
+            ...fixtures.sakes[0]!,
+            recommendedLandMemoryIds: [
+              "not-present",
+              "development-land-sea-01",
+            ],
+          },
+          fixtures.sakes[1]!,
+        ],
+      }),
+    ).toThrow("references missing land memory ID");
   });
 });

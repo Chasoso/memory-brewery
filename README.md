@@ -35,6 +35,8 @@ formatter / lint / typecheck / unit test / build の実コマンドは `scripts/
 
 E2E、視覚回帰、baseline更新、手動QAの条件は [v0.1 test matrix](docs/testing/v0.1-test-matrix.md) と [manual QA checklist](docs/testing/v0.1-manual-qa-checklist.md) を参照してください。
 
+参加者URLは `/?sake_id=development-sake-snow-01` のように開発用synthetic酒を指定できます。URL契約、既定酒、不明IDの回復、QRとの境界は [sake entry](docs/participant/sake-entry.md) を参照してください。QRコード自体は未実装です。
+
 最新の受け入れ状態とtag未作成の理由は、[v0.1.0 local MVP acceptance review](docs/acceptance/v0.1.0-local-mvp-acceptance-review.md) を参照してください。
 
 ## Local application foundation

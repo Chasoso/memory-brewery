@@ -4,7 +4,7 @@
 
 There is no original or externally sourced dataset in this directory yet. The runtime fixture loader currently reads two small, explicitly synthetic development JSON files from `src/adapters/fixture/`:
 
-- `sake-fixtures.json`: one fictional development sake profile.
+- `sake-fixtures.json`: two fictional development sake profiles (`development-sake-snow-01` and `development-sake-water-02`) with synthetic generation traits and land-memory recommendations.
 - `land-memory-fixtures.json`: three fictional development land-memory profiles.
 
 They contain no product images, official product descriptions, or copied external records. Their provenance, confirmation date, processing, and redistribution status are recorded in [`docs/data/data-sources.md`](../docs/data/data-sources.md). Do not treat these fixtures as public-facing sake or geographic data.

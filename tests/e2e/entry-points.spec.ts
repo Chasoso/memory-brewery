@@ -192,14 +192,51 @@ test("participant can finish and publish using only the keyboard", async ({
   await expect(start).toBeVisible();
 });
 
+test("an unknown sake_id is recoverable without silently selecting a different sake", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/?test=1&sake_id=unknown-sake");
+  await expect(page.getByRole("alert")).toHaveText(
+    "指定された酒が見つかりません。",
+  );
+  await page.getByRole("button", { name: "既定の酒で始める" }).click();
+  await expect(
+    page.getByText("sake_id: development-sake-snow-01"),
+  ).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  expect(errors).toEqual([]);
+});
+
+test("@visual the comparative sake has its own deterministic opening canvas", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 760 });
+  await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" });
+  await page.goto("/?test=1&sake_id=development-sake-water-02");
+  await completeParticipant(page);
+  await openWithoutAudio(page);
+  await expect(page.locator(".opening-canvas")).toHaveAttribute(
+    "data-visual-time-ms",
+    "20",
+  );
+  await expect(page.locator(".opening-canvas")).toHaveScreenshot(
+    "opening-comparative-sake-b.png",
+    { animations: "disabled" },
+  );
+});
+
 test("@visual venue restores late-open recipes, rejects duplicates, and clears every open venue", async ({
   browser,
 }) => {
   const context = await browser.newContext();
   const participant = await context.newPage();
   await participant.setViewportSize({ width: 375, height: 760 });
-  await participant.goto("/?test=1");
+  await participant.goto("/?test=1&sake_id=development-sake-snow-01");
   await completeParticipant(participant);
+  const firstRecipeId = await participant.locator(".recipe-id").textContent();
   await openWithoutAudio(participant);
   await participant.getByRole("button", { name: "会場へ重ねる" }).click();
   await expect(participant.getByText("会場へ記憶を重ねました。")).toBeVisible();
@@ -227,11 +264,15 @@ test("@visual venue restores late-open recipes, rejects duplicates, and clears e
   await expectVenueCount(venue, 1);
 
   const secondParticipant = await context.newPage();
-  await secondParticipant.goto("/?test=1");
-  await completeParticipant(secondParticipant, {
-    colorIndex: 1,
-    scenario: /友人/,
-  });
+  await secondParticipant.goto("/?test=1&sake_id=development-sake-water-02");
+  await expect(
+    secondParticipant.getByText("開発用記憶酒・深い麹"),
+  ).toBeVisible();
+  await completeParticipant(secondParticipant);
+  const secondRecipeId = await secondParticipant
+    .locator(".recipe-id")
+    .textContent();
+  expect(secondRecipeId).not.toBe(firstRecipeId);
   await openWithoutAudio(secondParticipant);
   await secondParticipant.getByRole("button", { name: "会場へ重ねる" }).click();
   await expectVenueCount(venue, 2);

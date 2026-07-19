@@ -106,6 +106,36 @@ describe("createBrewingRecipe", () => {
     );
   });
 
+  it("uses sake traits as a deterministic base for both audio and visual recipes", () => {
+    const comparativeSake = fixtures.sakes.find(
+      (candidate) => candidate.id === "development-sake-water-02",
+    )!;
+    const first = createBrewingRecipe({
+      ...baseArguments,
+      seed: "sake-compare",
+    });
+    const second = createBrewingRecipe({
+      ...baseArguments,
+      sake: comparativeSake,
+      seed: "sake-compare",
+    });
+
+    expect(second.sakeId).not.toBe(first.sakeId);
+    expect(second.recipeId).not.toBe(first.recipeId);
+    expect(second.audio).not.toEqual(first.audio);
+    expect(second.visual).not.toEqual(first.visual);
+    expect(second.audio.tempo).not.toBe(first.audio.tempo);
+    expect(second.visual.particleSpeed).not.toBe(first.visual.particleSpeed);
+    expect(BrewingRecipeSchema.parse(second)).toEqual(second);
+    expect(
+      createBrewingRecipe({
+        ...baseArguments,
+        sake: comparativeSake,
+        seed: "sake-compare",
+      }),
+    ).toEqual(second);
+  });
+
   it("does not mutate participant input and stays inside defined ranges", () => {
     const inputBefore = JSON.stringify(input);
     const recipe = createBrewingRecipe({

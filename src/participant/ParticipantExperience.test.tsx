@@ -91,6 +91,37 @@ describe("ParticipantExperienceScreen", () => {
     expect(screen.getByText(/Recipe ID: recipe-v1-/)).toBeInTheDocument();
   });
 
+  it("shows the selected synthetic sake and its associated land candidates", async () => {
+    const experience = loadParticipantExperience("development-sake-water-02");
+    render(
+      <ParticipantExperienceScreen
+        experience={experience}
+        selectionStatus="selected"
+        seed="selected-sake"
+        clock={createFixedClock()}
+        odoriDurationMs={1}
+      />,
+    );
+
+    expect(screen.getByText("開発用記憶酒・深い麹")).toBeInTheDocument();
+    expect(
+      screen.getByText("sake_id: development-sake-water-02"),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "三段仕込みをはじめる" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "動きの代替入力を使う" }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "この感覚を仕込みへ" }));
+    await screen.findByRole("heading", {
+      name: "この一杯に、どの石川を重ねますか？",
+    });
+    expect(screen.getAllByRole("radio")[0]).toHaveTextContent(
+      "開発用・町の記憶",
+    );
+  });
+
   it("runs the odori timer once after strict-mode-safe rendering", async () => {
     vi.useFakeTimers();
     render(
