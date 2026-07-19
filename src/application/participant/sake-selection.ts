@@ -1,8 +1,9 @@
 import { DEFAULT_SAKE_ID } from "../../adapters/fixture/load-fixtures";
-import type { FixtureSet, SakeProfile } from "../../domain/brewing/schemas";
-
-const sakeIdPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const maximumSakeIdLength = 80;
+import {
+  SakeIdSchema,
+  type FixtureSet,
+  type SakeProfile,
+} from "../../domain/brewing/schemas";
 
 export { DEFAULT_SAKE_ID };
 
@@ -25,11 +26,7 @@ export function resolveSakeSelection(
   if (values.length !== 1) return { status: "invalid" };
 
   const requestedSakeId = values[0]?.trim() ?? "";
-  if (
-    requestedSakeId === "" ||
-    requestedSakeId.length > maximumSakeIdLength ||
-    !sakeIdPattern.test(requestedSakeId)
-  ) {
+  if (!SakeIdSchema.safeParse(requestedSakeId).success) {
     return { status: "invalid" };
   }
 

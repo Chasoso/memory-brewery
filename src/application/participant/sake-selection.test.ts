@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { loadFixtures } from "../../adapters/fixture/load-fixtures";
+import { SakeIdSchema } from "../../domain/brewing/schemas";
 import { loadParticipantExperience } from "./experience";
 import { loadParticipantEntry } from "./participant-entry";
 import { DEFAULT_SAKE_ID, resolveSakeSelection } from "./sake-selection";
@@ -31,6 +32,17 @@ describe("sake entry selection", () => {
         fixtures,
       ).status,
     ).toBe("invalid");
+    expect(SakeIdSchema.safeParse(DEFAULT_SAKE_ID).success).toBe(true);
+    for (const sake of fixtures.sakes) {
+      const selected = resolveSakeSelection(
+        new URLSearchParams(`sake_id=${sake.id}`),
+        fixtures,
+      );
+      expect(selected).toMatchObject({
+        status: "selected",
+        sake: { id: sake.id },
+      });
+    }
   });
 
   it("keeps unknown, empty, malformed, and multiple values distinct from the default", () => {

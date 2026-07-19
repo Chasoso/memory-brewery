@@ -3,10 +3,11 @@ import participantInputFixtures from "./participant-input-fixtures.json";
 import sakeFixtures from "./sake-fixtures.json";
 import {
   FixtureSetSchema,
+  SakeIdSchema,
   type FixtureSet,
 } from "../../domain/brewing/schemas";
 
-export const DEFAULT_SAKE_ID = "development-sake-snow-01";
+export const DEFAULT_SAKE_ID = SakeIdSchema.parse("development-sake-snow-01");
 
 export function loadFixtures(): FixtureSet {
   return parseFixtureSet({

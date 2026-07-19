@@ -6,6 +6,7 @@ import {
   BrewingRecipeSchema,
   LandMemorySchema,
   ParticipantInputSchema,
+  SakeIdSchema,
   SakeProfileSchema,
 } from "./schemas";
 import { createFixedClock } from "../../test-support/brewing";
@@ -37,6 +38,19 @@ describe("brewing schemas", () => {
     expect(
       SakeProfileSchema.safeParse({ ...sake, alcoholPercentage: 101 }).success,
     ).toBe(false);
+    expect(
+      SakeProfileSchema.safeParse({ ...sake, id: "UPPERCASE-SAKE" }).success,
+    ).toBe(false);
+    expect(
+      SakeProfileSchema.safeParse({ ...sake, id: "sake id" }).success,
+    ).toBe(false);
+    expect(
+      SakeProfileSchema.safeParse({
+        ...sake,
+        id: `sake-${"a".repeat(76)}`,
+      }).success,
+    ).toBe(false);
+    expect(SakeIdSchema.safeParse(sake.id).success).toBe(true);
   });
 
   it("rejects invalid land and participant input", () => {

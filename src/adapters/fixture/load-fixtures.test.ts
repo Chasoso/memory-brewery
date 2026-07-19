@@ -71,4 +71,28 @@ describe("fixture loader", () => {
       }),
     ).toThrow("references missing land memory ID");
   });
+
+  it("rejects duplicate land recommendations while preserving valid fixture order", () => {
+    const fixtures = loadFixtures();
+    expect(fixtures.sakes[0]!.recommendedLandMemoryIds).toEqual([
+      "development-land-snow-01",
+      "development-land-town-01",
+      "development-land-sea-01",
+    ]);
+    expect(() =>
+      parseFixtureSet({
+        ...fixtures,
+        sakes: [
+          {
+            ...fixtures.sakes[0]!,
+            recommendedLandMemoryIds: [
+              "development-land-snow-01",
+              "development-land-snow-01",
+            ],
+          },
+          fixtures.sakes[1]!,
+        ],
+      }),
+    ).toThrow("recommendedLandMemoryIds");
+  });
 });
