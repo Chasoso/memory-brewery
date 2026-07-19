@@ -9,6 +9,7 @@ import { NoOpAudioPlayer } from "../adapters/opening/no-op-audio-player";
 import { ToneAudioPlayer } from "../adapters/opening/tone-audio-player";
 import type { BrewingRecipe } from "../domain/brewing/schemas";
 import { OpeningCanvas } from "./OpeningCanvas";
+import type { RecipePublisher } from "../application/venue/venue-protocol";
 
 const defaultOpeningDurationMs = 20_000;
 
@@ -20,12 +21,14 @@ export function OpeningExperience({
   animationDriver,
   openingDurationMs = defaultOpeningDurationMs,
   audioPlayerFactory = () => new ToneAudioPlayer(),
+  recipePublisher,
 }: {
   recipe: BrewingRecipe;
   onReset: () => void;
   animationDriver?: AnimationDriver;
   openingDurationMs?: number;
   audioPlayerFactory?: () => AudioPlayer;
+  recipePublisher?: RecipePublisher;
 }) {
   const [status, setStatus] = useState<OpeningStatus>("ready");
   const [visualTimeMs, setVisualTimeMs] = useState(0);
@@ -37,6 +40,9 @@ export function OpeningExperience({
   const started = useRef(false);
   const mounted = useRef(true);
   const sessionId = useRef(0);
+  const [publishStatus, setPublishStatus] = useState<
+    "idle" | "sending" | "published" | "duplicate" | "failed"
+  >("idle");
 
   useEffect(() => {
     if (typeof window.matchMedia !== "function") return undefined;
@@ -132,6 +138,20 @@ export function OpeningExperience({
     started.current = false;
     onReset();
   };
+  const publish = () => {
+    if (recipePublisher === undefined || publishStatus === "sending") return;
+    setPublishStatus("sending");
+    void recipePublisher.publish(recipe).then((result) => {
+      if (!mounted.current) return;
+      setPublishStatus(
+        result.status === "published"
+          ? "published"
+          : result.status === "duplicate"
+            ? "duplicate"
+            : "failed",
+      );
+    });
+  };
 
   return (
     <section className="opening-experience" aria-label="開栓体験">
@@ -203,6 +223,30 @@ export function OpeningExperience({
         >
           もう一度見る
         </button>
+      )}
+      {status !== "ready" && recipePublisher !== undefined && (
+        <div className="venue-publish">
+          <button
+            className="text-button"
+            type="button"
+            disabled={
+              publishStatus === "sending" ||
+              publishStatus === "published" ||
+              publishStatus === "duplicate"
+            }
+            onClick={publish}
+          >
+            会場へ重ねる
+          </button>
+          <p aria-live="polite">
+            {publishStatus === "sending" && "会場へ重ねています。"}
+            {publishStatus === "published" && "会場へ記憶を重ねました。"}
+            {publishStatus === "duplicate" &&
+              "この記憶はすでに会場へ重なっています。"}
+            {publishStatus === "failed" &&
+              "会場への保存に失敗しました。もう一度お試しください。"}
+          </p>
+        </div>
       )}
       <button
         className="back-button opening-reset"

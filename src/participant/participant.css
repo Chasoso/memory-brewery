@@ -679,6 +679,19 @@ input:focus-visible {
 .opening-reset {
   margin-top: 14px;
 }
+.venue-publish {
+  margin-top: 12px;
+  text-align: center;
+}
+.venue-publish .text-button {
+  color: var(--koji);
+}
+.venue-publish p {
+  min-height: 1.6em;
+  margin: 5px 0;
+  color: rgba(241, 238, 228, 0.72);
+  font-size: 11px;
+}
 .recipe-strip {
   margin: 28px 0 0;
   display: grid;

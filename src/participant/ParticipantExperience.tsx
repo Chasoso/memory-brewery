@@ -20,6 +20,7 @@ import type { ParticipantInput } from "../domain/brewing/schemas";
 import type { AnimationDriver } from "../application/opening/animation-driver";
 import type { AudioPlayer } from "../application/opening/audio-player";
 import { OpeningExperience } from "./OpeningExperience";
+import type { RecipePublisher } from "../application/venue/venue-protocol";
 import "./participant.css";
 
 const defaultOdoriDurationMs = 10_000;
@@ -32,6 +33,7 @@ export type ParticipantExperienceProps = {
   openingDurationMs?: number;
   animationDriver?: AnimationDriver;
   audioPlayerFactory?: () => AudioPlayer;
+  recipePublisher?: RecipePublisher;
 };
 
 const colorChoices: {
@@ -64,6 +66,7 @@ export function ParticipantExperienceScreen({
   openingDurationMs,
   animationDriver,
   audioPlayerFactory,
+  recipePublisher,
 }: ParticipantExperienceProps) {
   const [flow, dispatch] = useReducer(
     participantFlowReducer,
@@ -216,6 +219,7 @@ export function ParticipantExperienceScreen({
           {...(openingDurationMs === undefined ? {} : { openingDurationMs })}
           {...(animationDriver === undefined ? {} : { animationDriver })}
           {...(audioPlayerFactory === undefined ? {} : { audioPlayerFactory })}
+          {...(recipePublisher === undefined ? {} : { recipePublisher })}
         />
       )}
     </main>
@@ -599,6 +603,7 @@ function Result({
   openingDurationMs,
   animationDriver,
   audioPlayerFactory,
+  recipePublisher,
 }: {
   recipe: NonNullable<ReturnType<typeof completeBrewingSession>>;
   experience: ParticipantExperience;
@@ -606,6 +611,7 @@ function Result({
   openingDurationMs?: number;
   animationDriver?: AnimationDriver;
   audioPlayerFactory?: () => AudioPlayer;
+  recipePublisher?: RecipePublisher;
 }) {
   const land = experience.landMemories.find(
     (item) => item.id === recipe.landMemoryId,
@@ -630,6 +636,7 @@ function Result({
         {...(openingDurationMs === undefined ? {} : { openingDurationMs })}
         {...(animationDriver === undefined ? {} : { animationDriver })}
         {...(audioPlayerFactory === undefined ? {} : { audioPlayerFactory })}
+        {...(recipePublisher === undefined ? {} : { recipePublisher })}
       />
       <dl className="recipe-strip">
         <div>

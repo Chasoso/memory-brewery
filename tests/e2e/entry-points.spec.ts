@@ -38,11 +38,55 @@ test("participant completes the three-stage flow on a mobile viewport", async ({
   expect(hasNoHorizontalScroll).toBe(true);
 });
 
-test("venue entry is available", async ({ page }) => {
-  await page.goto("/venue.html");
-
+test("participant publishes one recipe to a venue tab and venue restores it", async ({
+  browser,
+}) => {
+  const context = await browser.newContext();
+  const venue = await context.newPage();
+  const participant = await context.newPage();
+  await venue.goto("/venue.html?test=1");
+  await expect(venue.getByText("まだ記憶はありません")).toBeVisible();
+  await participant.goto("/?test=1");
+  await participant
+    .getByRole("button", { name: "三段仕込みをはじめる" })
+    .click();
+  await participant
+    .getByRole("button", { name: "動きの代替入力を使う" })
+    .click();
+  await participant.getByRole("button", { name: "この感覚を仕込みへ" }).click();
+  await participant.getByRole("radio").first().click();
+  await participant.getByRole("button", { name: "土地の記憶を重ねる" }).click();
+  await participant.getByRole("radio", { name: /静かな夜/ }).click();
+  await participant
+    .getByRole("button", { name: "三段の仕込みを完了する" })
+    .click();
+  await participant.getByLabel("音声なしで開栓する").check();
+  await participant.getByRole("button", { name: /開栓する/ }).click();
+  await participant.getByRole("button", { name: "会場へ重ねる" }).click();
+  await expect(participant.getByText("会場へ記憶を重ねました。")).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Memory Brewery" }),
+    venue
+      .getByText("MEMORIES BREWING")
+      .locator("..")
+      .getByText("1", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("Venue entry")).toBeVisible();
+  await expect(venue.locator(".venue-canvas")).toHaveScreenshot(
+    "venue-fixed-chromium.png",
+    { animations: "disabled" },
+  );
+  await participant
+    .getByRole("button", { name: "会場へ重ねる" })
+    .click({ force: true })
+    .catch(() => undefined);
+  await venue.reload();
+  await expect(
+    venue
+      .getByText("MEMORIES BREWING")
+      .locator("..")
+      .getByText("1", { exact: true }),
+  ).toBeVisible();
+  await venue.getByRole("button", { name: "会場の記憶をクリア" }).click();
+  await venue.getByRole("button", { name: "消去する" }).click();
+  await expect(venue.getByText("まだ記憶はありません")).toBeVisible();
+  await context.close();
 });
