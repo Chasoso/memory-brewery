@@ -15,7 +15,7 @@ The collection is sorted by `createdAt`, then `recipeId`, retains at most 50 rec
 
 ## Aggregate and privacy
 
-`venue-canvas-2d-v1` derives stable marks from each recipe's seed and ID, then combines counts, land IDs, and palette tokens. Identical recipe sets, size, time, renderer version, and reduced-motion configuration produce the same drawing model. The transient arrival caption is not persisted.
+`venue-canvas-2d-v1` derives stable marks from each recipe's seed and ID, then combines counts, land IDs, and palette tokens. Identical recipe sets, size, time, renderer version, and reduced-motion configuration produce the same drawing model. The transient arrival caption is not persisted and clears after four seconds (or immediately when the collection is cleared). Land IDs are resolved to fixture display names in an application view model, with a safe generic fallback.
 
 The adapter treats both storage and channel data as untrusted. It never inserts HTML, logs free text, retains raw pointer input, image/audio data, or personal identifiers. Storage errors do not stop a live channel notification; a failed participant save remains retryable.
 

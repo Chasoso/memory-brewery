@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { LocalVenueSync } from "../adapters/venue/local-venue-sync";
 import { createVenueAggregate } from "../application/venue/venue-scene";
+import { createVenueLandSummaries } from "../application/venue/venue-view-model";
 import type { BrewingRecipe } from "../domain/brewing/schemas";
 import { VenueCanvas } from "./VenueCanvas";
 import "./venue.css";
@@ -11,7 +12,28 @@ export function VenueExperience({
 }: {
   sync?: LocalVenueSync;
 }) {
-  const [sync] = useState(() => providedSync ?? new LocalVenueSync());
+  if (providedSync !== undefined) return <VenueContent sync={providedSync} />;
+  return <OwnedVenueExperience />;
+}
+
+function OwnedVenueExperience() {
+  const [sync, setSync] = useState<LocalVenueSync>();
+  useEffect(() => {
+    const ownedSync = new LocalVenueSync();
+    let active = true;
+    void Promise.resolve().then(() => {
+      if (active) setSync(ownedSync);
+    });
+    return () => {
+      active = false;
+      ownedSync.dispose();
+    };
+  }, []);
+  if (sync === undefined) return null;
+  return <VenueContent sync={sync} />;
+}
+
+function VenueContent({ sync }: { sync: LocalVenueSync }) {
   const [recipes, setRecipes] = useState<BrewingRecipe[]>(() => sync.load());
   const [latestRecipeId, setLatestRecipeId] = useState<string | undefined>();
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -31,7 +53,12 @@ export function VenueExperience({
     return () => {
       unsubscribe();
     };
-  }, [providedSync, sync]);
+  }, [sync]);
+  useEffect(() => {
+    if (latestRecipeId === undefined) return undefined;
+    const timer = window.setTimeout(() => setLatestRecipeId(undefined), 4000);
+    return () => window.clearTimeout(timer);
+  }, [latestRecipeId]);
   useEffect(() => {
     const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!media) return undefined;
@@ -41,7 +68,10 @@ export function VenueExperience({
     return () => media.removeEventListener("change", update);
   }, []);
   const aggregate = useMemo(() => createVenueAggregate(recipes), [recipes]);
-  const landEntries = Object.entries(aggregate.landCounts);
+  const landEntries = useMemo(
+    () => createVenueLandSummaries(aggregate),
+    [aggregate],
+  );
   return (
     <main className="venue-shell">
       <VenueCanvas
@@ -82,10 +112,10 @@ export function VenueExperience({
         {landEntries.length === 0 ? (
           <p>まだ記憶はありません</p>
         ) : (
-          landEntries.map(([id, count]) => (
-            <div key={id}>
+          landEntries.map(({ displayName, count }) => (
+            <div key={displayName}>
               <span aria-hidden="true" />
-              <strong>{id}</strong>
+              <strong>{displayName}</strong>
               <small>{count}</small>
             </div>
           ))
