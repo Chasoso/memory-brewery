@@ -16,6 +16,22 @@ test("participant completes the three-stage flow on a mobile viewport", async ({
   await page.getByRole("button", { name: "三段の仕込みを完了する" }).click();
   await expect(page.getByText("三段の仕込みが完了しました。")).toBeVisible();
   await expect(page.getByText(/Recipe ID: recipe-v1-/)).toBeVisible();
+  await page.getByLabel("音声なしで開栓する").check();
+  await page.getByRole("button", { name: /開栓する/ }).click();
+  await expect(
+    page.getByRole("img", { name: "醸造レシピから生まれた、動く記憶の作品" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("作品は静かな余韻として残っています。"),
+  ).toBeVisible();
+  await expect(page.locator(".opening-canvas")).toHaveAttribute(
+    "data-visual-time-ms",
+    "20",
+  );
+  await expect(page.locator(".opening-canvas")).toHaveScreenshot(
+    "opening-fixed-chromium.png",
+    { animations: "disabled" },
+  );
   const hasNoHorizontalScroll = await page.evaluate<boolean>(
     "document.documentElement.scrollWidth <= window.innerWidth",
   );

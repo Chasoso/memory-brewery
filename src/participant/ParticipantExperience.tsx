@@ -17,6 +17,9 @@ import {
 } from "../application/participant/flow";
 import { systemClock, type Clock } from "../domain/brewing/clock";
 import type { ParticipantInput } from "../domain/brewing/schemas";
+import type { AnimationDriver } from "../application/opening/animation-driver";
+import type { AudioPlayer } from "../application/opening/audio-player";
+import { OpeningExperience } from "./OpeningExperience";
 import "./participant.css";
 
 const defaultOdoriDurationMs = 10_000;
@@ -26,6 +29,9 @@ export type ParticipantExperienceProps = {
   seed?: string;
   clock?: Clock;
   odoriDurationMs?: number;
+  openingDurationMs?: number;
+  animationDriver?: AnimationDriver;
+  audioPlayerFactory?: () => AudioPlayer;
 };
 
 const colorChoices: {
@@ -55,6 +61,9 @@ export function ParticipantExperienceScreen({
   seed: suppliedSeed,
   clock = systemClock,
   odoriDurationMs = defaultOdoriDurationMs,
+  openingDurationMs,
+  animationDriver,
+  audioPlayerFactory,
 }: ParticipantExperienceProps) {
   const [flow, dispatch] = useReducer(
     participantFlowReducer,
@@ -200,7 +209,14 @@ export function ParticipantExperienceScreen({
         />
       )}
       {flow.step === "result" && flow.recipe !== undefined && (
-        <Result recipe={flow.recipe} experience={experience} onReset={reset} />
+        <Result
+          recipe={flow.recipe}
+          experience={experience}
+          onReset={reset}
+          {...(openingDurationMs === undefined ? {} : { openingDurationMs })}
+          {...(animationDriver === undefined ? {} : { animationDriver })}
+          {...(audioPlayerFactory === undefined ? {} : { audioPlayerFactory })}
+        />
       )}
     </main>
   );
@@ -580,10 +596,16 @@ function Result({
   recipe,
   experience,
   onReset,
+  openingDurationMs,
+  animationDriver,
+  audioPlayerFactory,
 }: {
   recipe: NonNullable<ReturnType<typeof completeBrewingSession>>;
   experience: ParticipantExperience;
   onReset: () => void;
+  openingDurationMs?: number;
+  animationDriver?: AnimationDriver;
+  audioPlayerFactory?: () => AudioPlayer;
 }) {
   const land = experience.landMemories.find(
     (item) => item.id === recipe.landMemoryId,
@@ -602,6 +624,13 @@ function Result({
       </h2>
       <p className="result-title">{recipe.title}</p>
       <p className="lead">{recipe.description}</p>
+      <OpeningExperience
+        recipe={recipe}
+        onReset={onReset}
+        {...(openingDurationMs === undefined ? {} : { openingDurationMs })}
+        {...(animationDriver === undefined ? {} : { animationDriver })}
+        {...(audioPlayerFactory === undefined ? {} : { audioPlayerFactory })}
+      />
       <dl className="recipe-strip">
         <div>
           <dt>一献</dt>
